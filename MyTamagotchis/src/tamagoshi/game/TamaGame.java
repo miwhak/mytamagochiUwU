@@ -6,9 +6,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Arrays;
 
-import tamagoshi.tamagoshis.BigEater;
-import tamagoshi.tamagoshis.BigPlayer;
-import tamagoshi.tamagoshis.Tamagoshi;
+import tamagoshi.tamagoshis.*;
 import tamagoshi.util.User;
 
 public class TamaGame {
@@ -20,7 +18,12 @@ public class TamaGame {
         this.tamaBeginList = new ArrayList<>();
         this.tamaAliveList = new ArrayList<>();
     }
-
+    /**
+    Checks if a Tamagotchi exists in the list of alive Tamagotchis, given its index.
+    If the index is out of bounds, prompts the user to choose an existing index.
+    @param index The index of the Tamagotchi to check.
+    @return The index of the existing Tamagotchi in the list of alive Tamagotchis.
+    */
     private int checkTamaExistInAliveList(int index){
         boolean isOk = false;
 
@@ -35,40 +38,60 @@ public class TamaGame {
         }
         return index;
     }
+
+    /**
+     Calculates the score of the game based on the age of Tamagoshi objects in the tamaBeginList.
+     The score is calculated as a percentage of the total possible score,
+     where the total possible score is the sum of
+     the maximum lifetime of all Tamagoshi objects in the tamaBeginList.
+     @return The score of the game as a double value.
+     */
     private double score(){
         double score=0;
         double maxScore=0;
         for(Tamagoshi tamagoshi : tamaBeginList){
             score += tamagoshi.getAge();
-
-        }
-        for(Tamagoshi tamagoshi : tamaBeginList){
             maxScore += tamagoshi.getLifeTime();
-
         }
         return (score/maxScore)*100;
     }
-
+    /**
+     Displays the end result of the game, including the status of each Tamagoshi and the overall score achieved.
+     The status of each Tamagoshi is determined by its energy, fun, age and lifetime attributes.
+     If the energy or fun of a Tamagoshi reaches 0, its status is
+     "n'est pas arrivé au bout et ne vous félicite pas :("
+     If the age of a Tamagoshi exceeds its lifetime, its status is "a bien vécu grâce à vous :)"
+     Otherwise, the status of a Tamagoshi is "a survécu et vous remercie :)"
+     The score is calculated by summing up the age attribute of all Tamagoshis at the beginning of the game,
+     and dividing it by the sum of the lifetime attribute of all Tamagoshis at the beginning of the game,
+     multiplied by 100.
+     The resulting score is rounded to two decimal places using DecimalFormat.
+     */
     private void resultat(){
         System.out.println("\n--------- fin de partie !! ----------------");
-        System.out.print("-------------bilan------------");
+        System.out.println("-------------bilan------------");
+        String status;
         for(Tamagoshi tamagoshi : tamaBeginList) {
-            System.out.print("\n\t" + tamagoshi.getName() + ", qui était un " + tamagoshi.getType() +", ");
-            if (tamagoshi.getEnergy() <= 0 || tamagoshi.getFun() <= 0)
-                System.out.print("n'est pas arrivé au bout" +
-                        " et ne vous félicite pas :( ");
-            else if (tamagoshi.getAge() > tamagoshi.getLifeTime() )
-                System.out.print("a bien vécu grâce à vous :)");
-            else
-                System.out.print("a survécu et vous remercie :)");
+
+            if (tamagoshi.getEnergy() <= 0 || tamagoshi.getFun() <= 0) {
+                status = "n'est pas arrivé au bout et ne vous félicite pas :(";
+            } else if (tamagoshi.getAge() > tamagoshi.getLifeTime()) {
+                status = "a bien vécu grâce à vous :)";
+            } else {
+                status = "a survécu et vous remercie :)";
             }
-
-
+            System.out.println("\t" + tamagoshi.getName() + ", qui était un "
+                    + tamagoshi.getType() + ", " + status);
+        }
         DecimalFormat df = new DecimalFormat("#.00");
         System.out.print("\n\tScore obtenu : " + df.format(score()) + "%");
-
     }
 
+    /**
+     This method initializes the game by asking the user for the desired number of tamagoshis,
+     and creating a list of tamagoshis with random names and types (regular, big eater or big player).
+     The maximum number of tamagoshis is 30, and the name list is predefined.
+     */
     public void initialisation() {
         int nbTamagoshi = 0;
         int randomTamagoshiType;
@@ -79,10 +102,7 @@ public class TamaGame {
                 nbTamagoshi = 30;
                 System.out.println("\n Nombre de tamagoshis bloqués à 30 !");
             }
-
-
         }
-
         List<String> nameList = new ArrayList<>(Arrays.asList(
                 "Emma", "Noah", "Olivia", "Liam", "Ava",
                 "William", "Sophia", "Mason", "Isabella",
@@ -103,20 +123,19 @@ public class TamaGame {
                 case 3 -> new BigPlayer(name);
                 default -> new Tamagoshi(name);
             };
-
             this.tamaBeginList.add(tamagoshi);
             this.tamaAliveList.add(tamagoshi);
-
         }
     }
 
-
+    /**
+     The method starts the game by initializing the tamagoshis and executing the game cycles
+     until all tamagoshis die or the maximum number of cycles is reached.
+     */
     public void play(){
         this.initialisation();
         int asking;
         int cycle = 1;
-
-
         int cycle1 = 10;
         while(!tamaAliveList.isEmpty() && cycle <= cycle1){
 
@@ -165,10 +184,12 @@ public class TamaGame {
 
         resultat();
     }
+    /**
+     * The main method for the TamaGame program. Creates a new instance of the TamaGame class and calls its play() method.
+     * @param args an array of String arguments passed to the program from the command line
+     */
     public static void main(String[] args) {
         TamaGame game = new TamaGame();
         game.play();
-
-
     }
 }

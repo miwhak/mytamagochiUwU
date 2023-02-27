@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"tamagoshi.tamagoshis","l":"BigEater"},{"p":"tamagoshi.tamagoshis","l":"BigPlayer"},{"p":"tamagoshi.game","l":"TamaGame"},{"p":"tamagoshi.tamagoshis","l":"Tamagoshi"},{"p":"tamagoshi.util","l":"User"}];updateSearchResults();
