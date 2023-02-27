@@ -1,42 +1,24 @@
 package tamagoshi.game;
 
 import java.util.ArrayList;
-import java.util.InputMismatchException;
+import java.util.Random;
 import java.text.DecimalFormat;
+import java.util.List;
+import java.util.Arrays;
 
+import tamagoshi.tamagoshis.BigEater;
+import tamagoshi.tamagoshis.BigPlayer;
 import tamagoshi.tamagoshis.Tamagoshi;
 import tamagoshi.util.User;
 
 public class TamaGame {
-    private ArrayList<Tamagoshi> tamaBeginList;
-    private ArrayList<Tamagoshi> tamaAliveList;
-    private int cycle = 10;
+    private final ArrayList<Tamagoshi> tamaBeginList;
+    private final ArrayList<Tamagoshi> tamaAliveList;
+    private final Random random = new Random();
 
     public TamaGame() {
-        this.tamaBeginList = new ArrayList<Tamagoshi>();
-        this.tamaAliveList = new ArrayList<Tamagoshi>();
-    }
-
-    public ArrayList<Tamagoshi> getTamaBeginList() {
-        return tamaBeginList;
-    }
-
-    public ArrayList<Tamagoshi> getTamaAliveList() {
-        return tamaAliveList;
-    }
-
-    public void setTamaBeginList(ArrayList<Tamagoshi> tamaBeginList) {
-        this.tamaBeginList = tamaBeginList;
-    }
-
-    public void setTamaAliveList(ArrayList<Tamagoshi> tamaAliveList) {
-        this.tamaBeginList= tamaAliveList;
-    }
-    public int getCycle() {
-        return cycle;
-    }
-    public void setCycle(int cycle) {
-        this.cycle = cycle;
+        this.tamaBeginList = new ArrayList<>();
+        this.tamaAliveList = new ArrayList<>();
     }
 
     private int checkTamaExistInAliveList(int index){
@@ -49,7 +31,6 @@ public class TamaGame {
             } catch (IndexOutOfBoundsException e) {
                 System.out.print("Entrée non valide. Veuillez en choisir un existant : ");
                 index = User.askIntToUser();
-                isOk=false;
             }
         }
         return index;
@@ -72,13 +53,14 @@ public class TamaGame {
         System.out.println("\n--------- fin de partie !! ----------------");
         System.out.print("-------------bilan------------");
         for(Tamagoshi tamagoshi : tamaBeginList) {
-            if (tamagoshi.getEnergy() <= 0)
-                System.out.print("\n\t" + tamagoshi.getName() + " n'est pas arrivé au bout" +
+            System.out.print("\n\t" + tamagoshi.getName() + ", qui était un " + tamagoshi.getType() +", ");
+            if (tamagoshi.getEnergy() <= 0 || tamagoshi.getFun() <= 0)
+                System.out.print("n'est pas arrivé au bout" +
                         " et ne vous félicite pas :( ");
-            else if (tamagoshi.getAge() >= tamagoshi.getLifeTime())
-                System.out.print("\n\t" + tamagoshi.getName() + " a bien vécu grâce à vous :)");
+            else if (tamagoshi.getAge() > tamagoshi.getLifeTime() )
+                System.out.print("a bien vécu grâce à vous :)");
             else
-                System.out.print("\n\t" + tamagoshi.getName() + " a survécu et vous remercie :)");
+                System.out.print("a survécu et vous remercie :)");
             }
 
 
@@ -88,19 +70,43 @@ public class TamaGame {
     }
 
     public void initialisation() {
-        String asking = "";
         int nbTamagoshi = 0;
+        int randomTamagoshiType;
         while(nbTamagoshi == 0) {
             System.out.print("Entrez le nombre de tamagoshis désiré : ");
             nbTamagoshi = User.askIntToUser();
+            if(nbTamagoshi > 30) {
+                nbTamagoshi = 30;
+                System.out.println("\n Nombre de tamagoshis bloqués à 30 !");
+            }
+
+
         }
 
+        List<String> nameList = new ArrayList<>(Arrays.asList(
+                "Emma", "Noah", "Olivia", "Liam", "Ava",
+                "William", "Sophia", "Mason", "Isabella",
+                "James", "Mia", "Benjamin", "Charlotte",
+                "Jacob", "Amelia", "Michael", "Harper",
+                "Elijah", "Evelyn", "Ethan", "Abigail",
+                "Alexander", "Emily", "Daniel", "Elizabeth",
+                "Matthew", "Mila", "Aiden", "Ella", "Henry"
+        ));
+        int index;
         for (int i = 0; i < nbTamagoshi; i++) {
-            System.out.print("Veuillez entrer le nom du tamagoshi " + (i + 1) + " : ");
-            asking = User.askUser();
-            Tamagoshi tamagoshi = new Tamagoshi(asking);
+            index = random.nextInt(nameList.size());
+            String name = nameList.get(index);
+            nameList.remove(index);
+            randomTamagoshiType = random.nextInt(3) + 1;
+            Tamagoshi tamagoshi = switch (randomTamagoshiType) {
+                case 2 -> new BigEater(name);
+                case 3 -> new BigPlayer(name);
+                default -> new Tamagoshi(name);
+            };
+
             this.tamaBeginList.add(tamagoshi);
             this.tamaAliveList.add(tamagoshi);
+
         }
     }
 
@@ -111,11 +117,11 @@ public class TamaGame {
         int cycle = 1;
 
 
-        while(!tamaAliveList.isEmpty() && cycle <= this.cycle){
+        int cycle1 = 10;
+        while(!tamaAliveList.isEmpty() && cycle <= cycle1){
 
             System.out.println("------------Cycle n°" + cycle + "-------------");
-            for ( int i = 0; i < tamaAliveList.size(); i++) {
-                Tamagoshi t = tamaAliveList.get(i);
+            for (Tamagoshi t : tamaAliveList) {
                 t.speak();
             }
 
@@ -151,6 +157,8 @@ public class TamaGame {
                     tamaAliveList.remove(i);
                     i--;
                 }
+                System.out.println(t);
+
             }
             cycle++;
         }

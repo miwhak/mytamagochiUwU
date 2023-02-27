@@ -30,7 +30,6 @@ public class User {
                 isOk = true;
             } catch (NumberFormatException e) {
                 System.out.print("Entrée non valide. Veuillez rentrer un nombre : ");
-                isOk=false;
             }
         }
         return asked;

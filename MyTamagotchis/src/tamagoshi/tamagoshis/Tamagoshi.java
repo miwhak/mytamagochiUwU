@@ -4,13 +4,14 @@ import java.util.Random;
 
 public class Tamagoshi {
     private int age;
-    private int maxEnergy;
+    private final int maxEnergy;
     private int energy;
-    private String name;
+    private final String name;
     private static int lifeTime;
+
     private int fun;
-    private int maxfun;
-    private Random random = new Random();
+    private final int maxfun;
+    private final Random random = new Random();
 
     public Tamagoshi(String name) {
         this.name = name;
@@ -19,9 +20,9 @@ public class Tamagoshi {
         this.fun = random.nextInt(5) + 3;
         this.maxEnergy = random.nextInt(5)+5;
         this.energy = random.nextInt(5) + 3;
-        this.lifeTime = random.nextInt(5) + 6;
-        if(this.lifeTime > 10)
-            this.lifeTime = 10;
+        lifeTime = random.nextInt(12) + 4;
+        if(lifeTime > 10)
+            lifeTime = 10;
     }
 
     // Getters and setters for the private variables
@@ -29,16 +30,8 @@ public class Tamagoshi {
         return age;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
-
     public int getMaxEnergy() {
         return maxEnergy;
-    }
-
-    public void setMaxEnergy(int maxEnergy) {
-        this.maxEnergy = maxEnergy;
     }
 
     public int getEnergy() {
@@ -53,16 +46,16 @@ public class Tamagoshi {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getLifeTime() {
         return lifeTime;
     }
 
-    public Random getRandom() {
-        return random;
+    public int getFun() {
+        return fun;
+    }
+
+    public void setFun(int fun) {
+        this.fun = fun;
     }
     public void speak() {
         if (energy > 4)
@@ -73,7 +66,7 @@ public class Tamagoshi {
         if (fun > 4)
             System.out.print(" et je m'amuse bien !");
         else
-            System.out.println(" et je suis déprimé :s ");
+            System.out.print(" et je suis déprimé :s ");
 
     }
     public void play(){
@@ -103,7 +96,7 @@ public class Tamagoshi {
     }
     public boolean spendEnergy() {
         energy -= 1;
-        fun -=1;
+        fun -= 1;
         if (energy <= 0 || fun <= 0)  {
             System.out.println("\t" + name + " : Je suis KO ! Arrrggh !");
             return false;
@@ -113,13 +106,16 @@ public class Tamagoshi {
     }
     public boolean getOld(){
         age++;
-        if (age >= lifeTime) {
+        if (age > lifeTime) {
             System.out.println("\t" + name + " : Je meurt de veillesse ! haaaaa !");
             return false;
         } else return true;
     }
     public String toString() {
         return "Tamagoshi [ nom=" + name + ", âge=" + age + ", durée de vie = " + lifeTime + ", maxEnergy=" + maxEnergy + ", energy=" + energy + " ]";
+    }
+    public String getType(){
+        return "tamagoshi sans type";
     }
 
     public static void main(String[] args) {
